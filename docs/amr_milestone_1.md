@@ -8,6 +8,7 @@ This guide will walk you through setting up the development environment for Work
 
 - **Package Manager Required**: Homebrew (macOS) or Chocolatey (Windows)
 - Basic terminal/command line knowledge
+- checkout at branch `workshop_market_research/milestone_1_start`
 
 ## Setup Steps
 
