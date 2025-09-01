@@ -42,6 +42,7 @@ brew install uv
 Navigate to your workshop directory and create the market_researcher folder:
 
 ```bash
+mkdir agents
 cd agents
 mkdir market_researcher
 cd market_researcher
