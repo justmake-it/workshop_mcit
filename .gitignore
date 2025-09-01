@@ -32,7 +32,6 @@ ENV/
 env/
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -66,3 +65,5 @@ temp/
 
 # Claude code
 .claude
+
+**/credentials
