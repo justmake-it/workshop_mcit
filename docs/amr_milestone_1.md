@@ -164,176 +164,217 @@ If you see authentication errors:
 ### Step 8: Define agent requirements based on the initial input
 
 ````
-# Unified Prompt for Market Researcher Agent Workshop Documentation
+Create implementation documentation for a workshop where
+  participants build a market research assistant that helps THEM
+   explore opportunities for DevOps solutions. The agent assists
+   the user in discovering market patterns, NOT role-playing as
+  a company representative.
 
-  I need comprehensive documentation for Workshop 2 of our AI Agents series where
-  participants build a collaborative "Market Researcher" using Google Agent Development Kit
-  (ADK). This workshop has two distinct milestones that progressively build capabilities.
+  ## Critical Context
+  - **Agent Purpose**: A research assistant that helps users
+  explore markets, NOT an interviewer
+  - **User Relationship**: The user drives research; agents
+  provide assistance and search capabilities
+  - **Conversation Style**: Natural, continuous flow - like
+  having a knowledgeable colleague help with research
+  - **Discovery Approach**: Markets, patterns, and personas
+  emerge FROM research, not predetermined
 
-  ## Core Philosophy
-  **"AI as Teammate, Not Tool"** - Agents must seek human guidance and incorporate
-  expertise. The workshop emphasizes human-in-the-loop (HITL) workflows where AI augments
-  rather than replaces human decision-making.
+  ## What Participants Already Have
+  - Working ADK setup with hello world agent at
+  http://localhost:8000
+  - Completed workshop prerequisites (steps 1-7 in existing
+  docs)
+  - Basic understanding of ADK concepts
 
-  ## Workshop Structure
-  - **Milestone 1 (45 min)**: Build a SINGLE interactive research assistant - simple and
-  scoped
-  - **Milestone 2 (45 min)**: Enhance with MULTIPLE sub-agents working as a team
-  - **Interface**: ADK Web UI only (http://localhost:8000) - NO CLI testing
-  - **Target Market**: Gaming companies (100-500 employees) with DevOps challenges
-  - **Final Output**: "Alex Chen" - Head of Platform Engineering persona
+  ## Workshop Philosophy
+  "AI as Research Partner" - The agent amplifies human research
+  capabilities through:
+  - Intelligent search and pattern recognition
+  - Contextual suggestions without prescribing paths
+  - Natural conversation that maintains momentum
+  - Open exploration leading to validated insights
 
-  ## Required Outputs
+  ## Technical Architecture Pattern
+  Follow the proven pattern from https://github.com/google/adk-s
+  amples/tree/main/python/agents/academic-research:
+  - Use `AgentTool` for wrapping sub-agents
+  - `Agent` class for specialized agents
+  - `LlmAgent` for coordinators
+  - Explicit conversation flow management
 
-  Please create 3 interconnected files:
+  ## Milestone 1: Single Research Assistant (45 min)
 
-  ### File 1: `amr_milestone_1_spec.md` - Technical Specification
-
-  Structure with these sections:
-
-  1. **Implementation Overview**
-     - Overarching goal of human augmentation
-     - Two-milestone approach explanation
-     - Why progressive enhancement matters
-
-  2. **Milestone 1: Single Interactive Research Assistant**
-     - **Goal**: One agent that asks questions and seeks guidance
-     - **Scope**: Basic search, human decisions, simple persona creation
-     - **Key Feature**: Agent asks "Should I..." before every major action
-     - **User Stories** (3 for Milestone 1):
-       - Story 1.1: Basic conversational search
-       - Story 1.2: Guided research with decisions
-       - Story 1.3: Co-create simple persona
-     - **Technical Details**: Single LlmAgent with ask_human tool
-     - **Output**: Basic Alex persona with human input
-
-  3. **Milestone 2: Multi-Agent Research Team**
-     - **Goal**: Transform single agent into coordinated team
-     - **Enhancement**: Add 3 specialist sub-agents with personalities
-     - **Key Feature**: Parallel research with human as team director
-     - **User Stories** (3 for Milestone 2):
-       - Story 2.1: Meet your team (Sam, Jordan, Morgan)
-       - Story 2.2: Coordinate parallel research
-       - Story 2.3: Strategic synthesis with advisor
-     - **Technical Details**: ParallelAgent, SequentialAgent patterns
-     - **Output**: Enhanced Alex with multi-source validation
-
-  4. **Implementation Code**
-     - Milestone 1 code: Single agent with ask_human
-     - Milestone 2 code: Team with coordinator, specialists, advisor
-     - Show progression from simple to complex
-
-  5. **ADK Web Testing Examples**
-     - Milestone 1: Simple chat interactions
-     - Milestone 2: Team coordination chats
-
-  ### File 2: `amr_milestone_1_scenarios.md` - Testing Scenarios
-
-  Structure with:
-
-  1. **Overview**
-     - Test collaboration at each milestone
-     - Progressive complexity
-
-  2. **Milestone 1 Scenarios** (3 scenarios - keep it simple)
-     - Scenario 1.1: First conversation with assistant
-     - Scenario 1.2: Research with guidance
-     - Scenario 1.3: Basic persona creation
-     - Each shows 2-3 decision points maximum
-
-  3. **Milestone 2 Scenarios** (4 scenarios - show enhancement)
-     - Scenario 2.1: Team introduction
-     - Scenario 2.2: Parallel research coordination
-     - Scenario 2.3: File upload integration
-     - Scenario 2.4: Strategic synthesis
-     - Each shows team dynamics and multiple touchpoints
-
-  4. **Error Handling** (1 per milestone)
-     - Milestone 1: Simple data scarcity
-     - Milestone 2: Team disagreements
-
-  5. **Success Metrics**
-     - Milestone 1: Basic collaboration works
-     - Milestone 2: Team amplifies human expertise
-
-  ### File 3: `amr_milestone_1_implementation_guide.md` - Setup Guide
-
-  ## Critical Implementation Details
-
-  ### Milestone 1 (Simple & Scoped):
-  - ONE agent only
-  - Basic google_search + ask_human tools
-  - 3-5 human decisions total
-  - Simple PatternAnalysis schema
-  - Basic AlexPersona output
-  - No parallel execution
-  - No sub-agents
-
-  Example Milestone 1 Code:
+  ### Core Implementation
   ```python
-  # Just one simple agent
-  research_assistant = Agent(
-      name="research_assistant",
-      model="gemini-2.0-flash",
-      instruction="""You help with market research.
-      Always ask: 'What should I research first?'
-      After finding data ask: 'Should I dig deeper?'""",
-      tools=[google_search, ask_human],
-      output_schema=PatternAnalysis
+  from google.adk.agents import Agent, LlmAgent
+  from google.adk.tools import google_search
+  from google.adk.tools.agent_tool import AgentTool
+
+  # Two-agent pattern for natural conversation flow
+  market_explorer = Agent(
+      name="market_explorer",
+      instruction="Help user explore industries with DevOps
+  challenges...",
+      tools=[google_search]
   )
 
-  Milestone 2 (Enhanced with Sub-agents):
-
-  - MULTIPLE agents (coordinator + 3 specialists + advisor)
-  - ParallelAgent for team execution
-  - SequentialAgent for workflow
-  - Each specialist has personality
-  - 8-10 human decisions
-  - File upload capability
-  - Enhanced schemas
-
-  Example Milestone 2 Structure:
-  # Team of specialists
-  reddit_analyst = Agent(name="Sam", ...)
-  technical_expert = Agent(name="Jordan", ...)
-  industry_researcher = Agent(name="Morgan", ...)
-
-  # Parallel execution
-  research_team = ParallelAgent(
-      sub_agents=[reddit_analyst, technical_expert, industry_researcher]
+  coordinator = LlmAgent(
+      name="coordinator",
+      instruction="Facilitate natural research conversation...",
+      tools=[AgentTool(agent=market_explorer)]
   )
 
-  # Full workflow
-  ai_research_department = SequentialAgent(
-      sub_agents=[team_coordinator, research_team, strategy_advisor]
+  Conversation Design Principles
+
+  1. Opening: Friendly, curious about what user wants to explore
+  2. Flow: Build on previous responses, no restart between
+  agents
+  3. Research: Search when user shows interest, share findings
+  conversationally
+  4. Output: Let patterns and personas emerge from exploration
+
+  Required Files
+
+  1. amr_milestone_1_spec.md
+
+  - Architecture using AgentTool pattern (NOT SequentialAgent)
+  - Conversation flow design for continuous experience
+  - User stories showing research partnership (not
+  interrogation)
+  - Complete working code with natural handoffs
+  - Testing approach for conversation quality
+
+  2. amr_milestone_1_scenarios.md
+
+  - User explores gaming → discovers specific pain points
+  - User starts broad → narrows to fintech through research
+  - User has hypothesis → agent helps validate/challenge
+  - Each scenario shows natural conversation flow
+
+  3. amr_milestone_1_implementation_guide.md
+
+  - Transform hello world into research assistant
+  - Implement conversational prompts (NO formal greetings in
+  handoffs)
+  - Test full conversation flows, not just individual responses
+  - Success = feels like one continuous conversation
+
+  Milestone 2: Research Team (45 min)
+
+  Multi-Agent Architecture
+
+  # Specialist agents with distinct research styles
+  data_analyst = Agent(
+      name="data_analyst",
+      instruction="Focus on quantitative patterns...",
+      tools=[google_search]
   )
 
-  Key Differences Between Milestones
+  industry_expert = Agent(
+      name="industry_expert",
+      instruction="Deep dive into sector-specific
+  challenges...",
+      tools=[google_search]
+  )
 
-  | Aspect    | Milestone 1     | Milestone 2           |
-  |-----------|-----------------|-----------------------|
-  | Agents    | 1 assistant     | 5+ team members       |
-  | Execution | Sequential only | Parallel + Sequential |
-  | Decisions | 3-5 simple      | 8-10 complex          |
-  | Personas  | Basic Alex      | Enhanced Alex         |
-  | Tools     | search + ask    | search + ask + files  |
-  | Time      | 45 min          | 45 min                |
+  coordinator = LlmAgent(
+      name="research_coordinator",
+      instruction="Orchestrate team research based on user
+  interests...",
+      tools=[
+          AgentTool(agent=data_analyst),
+          AgentTool(agent=industry_expert),
+          # more specialists
+      ]
+  )
 
-  Workshop Flow
+  Required Files
 
-  1. Start with Milestone 1 - prove human-AI collaboration works
-  2. "Now imagine having a whole team..." transition
-  3. Build Milestone 2 - experience the multiplier effect
-  4. Participants feel progression from assistant to team leader
+  4. amr_milestone_2_spec.md
 
-  Remember: Milestone 1 must be simple enough to build confidence, while Milestone 2 shows
-  the true power of multi-agent systems. The transformation should feel like going from
-  having one helpful assistant to leading an entire research department.
+  - Team architecture with specialized researchers
+  - Personality through research style, not quirky names
+  - Parallel research capabilities when appropriate
+  - Synthesis of multiple perspectives
 
-  This revised prompt clearly separates:
-  - **Milestone 1**: Simple, single agent with basic interactions
-  - **Milestone 2**: Enhanced version with multiple sub-agents working as a team
+  5. amr_milestone_2_scenarios.md
 
-  Each milestone has its own user stories, scenarios, and technical implementation, showing
-  clear progression from simple to complex.
+  - Team explores gaming from multiple angles simultaneously
+  - Specialists provide different insights on same industry
+  - Conflicting data leads to deeper investigation
+  - User guides team focus throughout
+
+  6. amr_milestone_2_implementation_guide.md
+
+  - Extend Milestone 1 with specialist agents
+  - Implement parallel research patterns
+  - Maintain conversation continuity with multiple agents
+  - Test team dynamics and natural handoffs
+
+  Critical Implementation Notes
+
+  Conversation Continuity
+
+  # BAD - Agents restart conversation
+  PROMPT = "Hello! I'm here to help with research..."
+
+  # GOOD - Agents continue naturally
+  PROMPT = "Based on your interest in [topic], let me
+  explore..."
+
+  User Agency
+
+  # BAD - Agent assumes direction
+  "Let's research gaming companies for AgentFlow"
+
+  # GOOD - Agent follows user lead
+  "What industry aspects interest you most?"
+
+  Context Awareness
+
+  - Agents know about AgentFlow's capabilities as context
+  - They DON'T push AgentFlow or assume it's the focus
+  - Context informs their assistance, doesn't drive it
+
+  Testing Requirements
+
+  1. Full conversation flows, not individual agent responses
+  2. Different user paths (gaming, fintech, e-commerce, etc.)
+  3. Conversation should feel natural and continuous
+  4. User should feel in control throughout
+  5. Insights should emerge, not be predetermined
+
+  Workshop Success Metrics
+
+  - Participants build agents that feel like research partners
+  - Conversations flow naturally without jarring transitions
+  - Users discover insights through exploration
+  - Technical patterns from ADK samples properly implemented
+  - No role-playing or interviewing behavior
+
+  What NOT to Include
+
+  - ADK setup instructions
+  - Environment configuration
+  - Theoretical explanations without code
+  - Predetermined market focus or personas
+  - Formal/support-ticket style interactions
+
+  Remember
+
+  The academic-research example shows the way: Clean
+  architecture, natural conversation flow, and agents that
+  amplify human capabilities. Every design decision should
+  support the user's research journey, not prescribe it.
+
+  This refactored prompt incorporates all lessons learned:
+  1. Clear agent purpose (assistant, not interviewer)
+  2. Technical pattern from academic-research example
+  3. Emphasis on conversation continuity
+  4. User agency throughout
+  5. Discovery-based approach
+  6. Specific code examples showing right/wrong patterns
+  7. Testing focused on conversation quality
+  8. No ambiguity about agent role or behavior
 ````
