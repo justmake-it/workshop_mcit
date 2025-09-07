@@ -87,13 +87,13 @@ tools = [google_search, vertex_ai_search]
 Manages state and persistence:
 
 #### SessionService
-Manages conversation state for continuous dialogues:
+Manages conversation state for continuous dialogues. See [detailed SessionService documentation](#sessionservice---short-term-memory) below.
 - `InMemorySessionService`
 - `DatabaseSessionService`
 - `VertexAiSessionService`
 
 #### MemoryService
-Provides long-term recall across different sessions:
+Provides long-term recall across different sessions. See [detailed MemoryService documentation](#memoryservice---long-term-memory) below.
 - `InMemoryMemoryService`
 - `VertexAiMemoryService`
 
@@ -102,7 +102,197 @@ Manages non-textual data like files:
 - `InMemoryArtifactService`
 - `GCSArtifactService`
 
-### 5. Evaluation System
+### 5. Memory Management
+
+ADK provides comprehensive memory management through two complementary services that handle different aspects of conversational AI memory. For detailed information, see the [official ADK documentation on sessions](https://google.github.io/adk-docs/sessions/).
+
+#### Memory Management Overview
+
+ADK distinguishes between two types of memory:
+
+1. **Short-term Memory (SessionService)**: Manages the current conversation context, including message history and temporary state within a single interaction
+2. **Long-term Memory (MemoryService)**: Provides persistent knowledge storage and retrieval across multiple conversations
+
+These services work together through the `InvocationContext`, allowing agents to maintain both immediate conversational awareness and access to historical knowledge.
+
+#### SessionService - Short-term Memory
+
+The SessionService manages conversation threads through Session objects. Each session represents a single interaction between a user and the agent system. For detailed documentation, see [SessionService guide](https://google.github.io/adk-docs/sessions/session/).
+
+**Core APIs**:
+```python
+# Create a new conversation
+session = await session_service.create_session(
+    app_name='my_app',
+    user_id='test_user',
+    state={'initial_context': 'value'}
+)
+
+# Retrieve existing session
+session = await session_service.get_session(
+    app_name='my_app',
+    user_id='test_user',
+    session_id='session_123'
+)
+
+# List user's sessions
+sessions = await session_service.list_sessions(
+    app_name='my_app',
+    user_id='test_user'
+)
+
+# Update session with new event
+await session_service.append_event(session=session, event=event)
+
+# Delete session
+await session_service.delete_session(
+    app_name='my_app',
+    user_id='test_user',
+    session_id='session_123'
+)
+```
+
+**State Hierarchy**:
+
+ADK implements a four-tier state system using prefix-based scoping:
+
+```python
+event.actions.state_delta = {
+    "app:theme": "dark",              # Global app state - shared by all users
+    "user:language": "en",            # User state - shared across user's sessions
+    "cart_items": ["item1", "item2"], # Session state - specific to this conversation
+    "temp:cache_key": "xyz123"        # Ephemeral state - not persisted
+}
+```
+
+- **`app:`** - Application-wide state shared across all users and sessions
+- **`user:`** - User-specific state persisted across all sessions for that user
+- **No prefix** - Session-specific state isolated to the current conversation
+- **`temp:`** - Temporary state that is not persisted to storage
+
+**Implementations**:
+
+1. **InMemorySessionService**
+   - Stores data in application memory
+   - No persistence (data lost on restart)
+   - Best for: Local development and testing
+   
+2. **DatabaseSessionService** (Python only)
+   - Uses SQLAlchemy for relational database storage
+   - Supports: PostgreSQL, MySQL, SQLite
+   - Best for: Production environments requiring persistence
+   
+3. **VertexAiSessionService**
+   - Integrates with Google Cloud Vertex AI
+   - Managed session storage
+   - Best for: Cloud-native deployments
+
+#### MemoryService - Long-term Memory
+
+The MemoryService provides persistent knowledge storage and semantic search capabilities across conversations. For implementation details, see [MemoryService guide](https://google.github.io/adk-docs/sessions/memory/).
+
+**Core APIs**:
+```python
+# Add completed session to memory
+await memory_service.add_session_to_memory(session)
+
+# Search memory for relevant information
+search_results = await memory_service.search_memory(
+    app_name='my_app',
+    user_id='test_user',
+    query='previous product recommendations'
+)
+```
+
+**Implementations**:
+
+1. **InMemoryMemoryService**
+   - Basic keyword matching
+   - No persistence
+   - Best for: Prototyping and testing
+   
+2. **VertexAiMemoryBankService**
+   - Semantic search capabilities
+   - Automatic memory extraction and consolidation
+   - Requirements:
+     ```bash
+     export GOOGLE_CLOUD_PROJECT="project-id"
+     export GOOGLE_CLOUD_LOCATION="us-central1"
+     ```
+   - Best for: Production with intelligent memory management
+   
+3. **VertexAiRagMemoryService**
+   - RAG corpus integration
+   - Document-based memory storage
+   - Best for: Knowledge-intensive applications
+
+#### Practical Integration
+
+Agents access memory services through the `InvocationContext`. For more details on context management, see [Context documentation](https://google.github.io/adk-docs/context/).
+
+**Accessing Services in Agents**:
+```python
+class MyAgent(BaseAgent):
+    async def _run_async_impl(self, ctx: InvocationContext) -> None:
+        # Access SessionService
+        session = ctx.session
+        await ctx.session_service.append_event(session, event)
+        
+        # Access MemoryService (if configured)
+        if ctx.memory_service:
+            results = await ctx.memory_service.search_memory(
+                app_name='my_app',
+                user_id=session.user_id,
+                query='relevant context'
+            )
+```
+
+**In Tools via ToolContext**:
+```python
+@tool
+async def search_knowledge(query: str, tool_context: ToolContext) -> str:
+    """Search long-term memory for information."""
+    search_results = await tool_context.search_memory(query)
+    return format_results(search_results)
+```
+
+**Configuration**:
+
+Via CLI:
+```bash
+# Configure memory service
+adk run my_agent --memory_service_uri="agentengine://1234567890"
+
+# Or for local development
+adk run my_agent --memory_service_uri="inmemory://"
+```
+
+Via Environment:
+```bash
+export MEMORY_SERVICE_URI="vertexai://project-id/location/memory-bank-id"
+```
+
+**State Update Pattern**:
+```python
+# Create event with state updates
+event = Event(
+    author='assistant',
+    content=response_content,
+    actions=EventActions(
+        state_delta={
+            'app:last_update': datetime.now().isoformat(),
+            'user:preferences': updated_preferences,
+            'conversation_topic': extracted_topic,
+            'temp:processing_time': 0.5
+        }
+    )
+)
+
+# Append event - automatically updates session state
+await session_service.append_event(session, event)
+```
+
+### 6. Evaluation System
 
 Provides capabilities for agent performance evaluation:
 
@@ -150,6 +340,193 @@ root_agent = LlmAgent(
     description="Agent description",
     tools=[google_search]
 )
+```
+
+### Structured Input/Output
+
+ADK agents support structured input and output schemas using Pydantic BaseModel, enabling predictable data formats essential for multi-agent systems and API integrations.
+
+For detailed information, see the [official ADK documentation on LLM agents](https://google.github.io/adk-docs/agents/llm-agents/).
+
+#### Schema Definition
+
+```python
+from pydantic import BaseModel
+from google.adk.agents import LlmAgent
+
+class QueryInput(BaseModel):
+    query: str
+    max_results: int = 5
+
+class SearchResult(BaseModel):
+    title: str
+    summary: str
+    relevance_score: float
+
+# Agent with structured I/O
+structured_agent = LlmAgent(
+    name="structured_search",
+    model="gemini-2.0-flash",
+    input_schema=QueryInput,
+    output_schema=SearchResult,
+    instruction="""You are a search assistant.
+    
+    IMPORTANT: Your response must be a JSON object with the following fields:
+    - title: The main title of the search result
+    - summary: A brief summary of the content
+    - relevance_score: A float between 0 and 1 indicating relevance
+    
+    Return ONLY valid JSON matching this structure."""
+)
+```
+
+#### Important Limitations and Solutions
+
+1. **Tools and Structured Output**: Originally, agents with `output_schema` couldn't use tools. ADK now provides an automatic workaround using `SetModelResponseTool`.
+
+2. **Official Pattern**: When an agent has both `output_schema` and `tools`, ADK automatically:
+   - Injects a `set_model_response` tool
+   - Adds instructions for the LLM to use this tool for final output
+
+```python
+from pydantic import BaseModel
+from google.adk.agents import LlmAgent
+from google.adk.tools import search_wikipedia, get_current_year
+
+class PersonInfo(BaseModel):
+    name: str
+    birth_year: int
+    occupation: str
+
+# This now works - ADK handles the tool/schema integration
+agent_with_both = LlmAgent(
+    name="person_info_agent",
+    model="gemini-2.5-pro",
+    output_schema=PersonInfo,
+    tools=[search_wikipedia, get_current_year],
+    instruction="""Research information about the person.
+    
+    Use the available tools to gather accurate information.
+    
+    IMPORTANT: Always use the set_model_response tool to provide 
+    your final answer in the required JSON structure:
+    {
+        "name": "string",
+        "birth_year": integer,
+        "occupation": "string"
+    }"""
+)
+```
+
+3. **Alternative Pattern** (if the automatic workaround has issues):
+```python
+# Use separate agents in a pipeline
+research_agent = LlmAgent(
+    name="researcher",
+    model="gemini-2.0-flash",
+    tools=[search_wikipedia],
+    instruction="Research and gather information."
+)
+
+formatter_agent = LlmAgent(
+    name="formatter",
+    model="gemini-2.0-flash",
+    output_schema=PersonInfo,
+    instruction="Format the information into the required JSON structure."
+)
+
+# Combine in sequence
+from google.adk.agents import SequentialAgent
+pipeline = SequentialAgent(
+    name="research_pipeline",
+    sub_agents=[research_agent, formatter_agent]
+)
+```
+
+### Best Practices for Deterministic JSON Output
+
+To ensure agents produce reliable, deterministic JSON output:
+
+#### 1. Explicit Prompt Instructions
+
+**Always include explicit JSON format instructions in your prompt**, even when using `output_schema`:
+
+```python
+# Good practice
+instruction = """You are a data extraction agent.
+
+IMPORTANT: You must ALWAYS return your response as a JSON object with this exact structure:
+{
+    "entity_name": "string",
+    "entity_type": "string", 
+    "confidence": 0.0 to 1.0
+}
+
+Do not include any text outside the JSON object."""
+
+# Even better - include an example
+instruction = """Extract entities from text.
+
+You must return JSON in this exact format:
+{
+    "entity_name": "Apple Inc.",
+    "entity_type": "ORGANIZATION",
+    "confidence": 0.95
+}
+
+ONLY return valid JSON. No additional text."""
+```
+
+#### 2. Temperature Settings
+
+Use lower temperature for more deterministic outputs:
+
+```python
+from google.generativeai.types import GenerateContentConfig
+
+structured_agent = LlmAgent(
+    name="deterministic_agent",
+    model="gemini-2.0-flash",
+    output_schema=MySchema,
+    generate_content_config=GenerateContentConfig(
+        temperature=0.2,  # Lower temperature for consistency
+        top_p=0.8
+    ),
+    instruction="Return JSON only. [Your explicit format instructions]"
+)
+```
+
+#### 3. Error Handling
+
+Always implement fallback mechanisms:
+
+```python
+import json
+
+try:
+    response = await agent.run(context)
+    parsed_data = json.loads(response.messages[-1].text)
+except json.JSONDecodeError:
+    # Fallback to raw text or retry
+    logger.warning("Failed to parse JSON, using raw response")
+    parsed_data = {"raw_response": response.messages[-1].text}
+```
+
+#### 4. Schema Complexity
+
+Start simple and gradually increase complexity:
+
+```python
+# Start with simple schemas
+class SimpleOutput(BaseModel):
+    result: str
+    confidence: float
+
+# Before moving to complex ones
+class ComplexOutput(BaseModel):
+    results: List[SearchResult]
+    metadata: Dict[str, Any]
+    processing_stats: ProcessingInfo
 ```
 
 ### Installation
@@ -214,7 +591,7 @@ adk web my_agent
 
 ### 2. Context Management
 Uses `InvocationContext` to bundle information during operations:
-- Session state management
+- Session state management (see [Memory Management](#memory-management))
 - Data passing between agents
 - Service access (Artifact, Memory, Authentication)
 - Identity tracking
@@ -267,7 +644,7 @@ ADK can be seen as the production framework that complements the rapid prototypi
 1. **Start Simple**: Begin with single-purpose agents before building complex multi-agent systems
 2. **Use Appropriate Agent Types**: Choose LlmAgent for reasoning tasks, Workflow Agents for structured processes
 3. **Implement Proper Evaluation**: Use the evaluation framework to continuously improve agent performance
-4. **Leverage Services**: Utilize SessionService and MemoryService for stateful applications
+4. **Leverage Services**: Utilize SessionService and MemoryService for stateful applications (see [Memory Management](#memory-management))
 5. **Design for Deployment**: Consider deployment requirements early in the development process
 
 ## Resources
