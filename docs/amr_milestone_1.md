@@ -173,13 +173,13 @@ Create implementation documentation for a workshop where
 
   ## Critical Context
   - **Agent Purpose**: A research assistant that helps users
-  explore markets, NOT an interviewer
+  explore data that will allow us to segment into relevant markets, NOT an interviewer
   - **User Relationship**: The user drives research; agents
   provide assistance and search capabilities
   - **Conversation Style**: Natural, continuous flow - like
   having a knowledgeable colleague help with research
   - **Discovery Approach**: Markets, patterns, and personas
-  emerge FROM research, not predetermined
+  emerge FROM research, not predetermined. We want to know which segments or markets to prioritize
 
   ## What Participants Already Have
   - Working ADK setup with hello world agent at
@@ -261,58 +261,6 @@ Create implementation documentation for a workshop where
   - Test full conversation flows, not just individual responses
   - Success = feels like one continuous conversation
 
-  Milestone 2: Research Team (45 min)
-
-  Multi-Agent Architecture
-
-  # Specialist agents with distinct research styles
-  data_analyst = Agent(
-      name="data_analyst",
-      instruction="Focus on quantitative patterns...",
-      tools=[google_search]
-  )
-
-  industry_expert = Agent(
-      name="industry_expert",
-      instruction="Deep dive into sector-specific
-  challenges...",
-      tools=[google_search]
-  )
-
-  coordinator = LlmAgent(
-      name="research_coordinator",
-      instruction="Orchestrate team research based on user
-  interests...",
-      tools=[
-          AgentTool(agent=data_analyst),
-          AgentTool(agent=industry_expert),
-          # more specialists
-      ]
-  )
-
-  Required Files
-
-  4. amr_milestone_2_spec.md
-
-  - Team architecture with specialized researchers
-  - Personality through research style, not quirky names
-  - Parallel research capabilities when appropriate
-  - Synthesis of multiple perspectives
-
-  5. amr_milestone_2_scenarios.md
-
-  - Team explores gaming from multiple angles simultaneously
-  - Specialists provide different insights on same industry
-  - Conflicting data leads to deeper investigation
-  - User guides team focus throughout
-
-  6. amr_milestone_2_implementation_guide.md
-
-  - Extend Milestone 1 with specialist agents
-  - Implement parallel research patterns
-  - Maintain conversation continuity with multiple agents
-  - Test team dynamics and natural handoffs
-
   Critical Implementation Notes
 
   Conversation Continuity
@@ -368,14 +316,4 @@ Create implementation documentation for a workshop where
   architecture, natural conversation flow, and agents that
   amplify human capabilities. Every design decision should
   support the user's research journey, not prescribe it.
-
-  This refactored prompt incorporates all lessons learned:
-  1. Clear agent purpose (assistant, not interviewer)
-  2. Technical pattern from academic-research example
-  3. Emphasis on conversation continuity
-  4. User agency throughout
-  5. Discovery-based approach
-  6. Specific code examples showing right/wrong patterns
-  7. Testing focused on conversation quality
-  8. No ambiguity about agent role or behavior
 ````
