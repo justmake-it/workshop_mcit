@@ -3,9 +3,9 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.tabSize": 2,
-  "python.defaultInterpreterPath": "${workspaceFolder}/agents/market_researcher/.venv/bin/python",
+  "python.defaultInterpreterPath": "${workspaceFolder}/agents/workshops/.venv/bin/python",
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/agents/market_researcher/.venv/lib/python3.13/site-packages"
+    "${workspaceFolder}/agents/workshops/.venv/lib/python3.13/site-packages"
   ],
   "python.analysis.typeCheckingMode": "strict",
   "python.analysis.autoImportCompletions": true,
