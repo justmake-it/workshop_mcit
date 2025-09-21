@@ -65,5 +65,5 @@ temp/
 
 # Claude code
 .claude
-
+CLAUDE.md
 **/credentials
