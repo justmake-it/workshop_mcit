@@ -6,13 +6,13 @@ from .orchestrator_content_creator import orchestrator_content_creator
 from .orchestrator_market_researcher import orchestrator_market_researcher
 from .orchestrator_outreach_specialist import orchestrator_outreach_specialist
 from .research_pipeline_gpt import (
-    create_research_pipeline_gpt,
+    build_evaluator_instruction,
     build_planner_instruction,
     build_query_generator_instruction,
-    build_web_researcher_instruction,
-    build_evaluator_instruction,
-    build_synthesizer_instruction,
     build_report_presenter_instruction,
+    build_synthesizer_instruction,
+    build_web_researcher_instruction,
+    create_research_pipeline_gpt,
 )
 from .research_pipeline_schemas import (
     ResearchFindings,
