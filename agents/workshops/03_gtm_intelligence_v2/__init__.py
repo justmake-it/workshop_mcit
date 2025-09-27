@@ -1,1 +1,0 @@
-# GTM Intelligence v2 - Phase 2 Implementation

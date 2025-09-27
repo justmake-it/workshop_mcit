@@ -311,7 +311,7 @@ The report must include these sections:
 
 # Create pipeline with context-only instructions (builders handle schema requirements)
 icp_research_pipeline = create_research_pipeline_gpt(
-    name="icp_research",
+    name="icp_research_pipeline",
     description="Systematic research pipeline for identifying ideal customer profiles",
     planner_instruction=ICP_PLANNER_CONTEXT,
     query_generator_instruction=ICP_QUERY_GENERATOR_CONTEXT,

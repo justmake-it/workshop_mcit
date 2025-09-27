@@ -279,7 +279,7 @@ The report must include these sections:
 
 # Create pipeline with context-only instructions
 content_research_pipeline = create_research_pipeline_gpt(
-    name="content_research",
+    name="content_research_pipeline",
     description="Systematic research pipeline for developing content strategies",
     planner_instruction=CONTENT_PLANNER_CONTEXT,
     query_generator_instruction=CONTENT_QUERY_GENERATOR_CONTEXT,
