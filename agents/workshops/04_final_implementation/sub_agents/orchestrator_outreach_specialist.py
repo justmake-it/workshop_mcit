@@ -80,7 +80,8 @@ OUTREACH_SESSION_KEYS = ResearchSessionKeys(
 )
 
 # Implementation-specific context for outreach research pipeline
-OUTREACH_PLANNER_CONTEXT = """You are a research planner for developing outreach strategies.
+OUTREACH_PLANNER_CONTEXT = """
+You are a research planner for developing outreach strategies.
 
 Using the market research and content strategy insights, create a comprehensive research plan for outreach strategies.
 
@@ -97,7 +98,8 @@ Using the market research and content strategy insights, create a comprehensive 
 - Discover automation tools and scalability methods
 - Understand response handling and nurturing workflows"""
 
-OUTREACH_QUERY_GENERATOR_CONTEXT = """Generate targeted search queries for outreach strategy research based on the research plan.
+OUTREACH_QUERY_GENERATOR_CONTEXT = """
+Generate targeted search queries for outreach strategy research based on the research plan.
 
 ## Research Plan:
 {outreach_research_plan}
@@ -120,7 +122,8 @@ OUTREACH_WEB_RESEARCHER_CONTEXT = """Research outreach strategies, engagement ta
 
 Prioritize data-driven insights from sales publications, B2B marketing resources, and documented campaign results."""
 
-OUTREACH_EVALUATOR_CONTEXT = """Evaluate outreach strategy research quality and completeness.
+OUTREACH_EVALUATOR_CONTEXT = """
+Evaluate outreach strategy research quality and completeness.
 
 ## Research Findings:
 {outreach_research_findings}

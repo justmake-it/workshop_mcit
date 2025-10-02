@@ -1,0 +1,187 @@
+{
+  "eval_set_id": "evalsetdee117",
+  "name": "evalsetdee117",
+  "description": null,
+  "eval_cases": [
+    {
+      "eval_id": "case6f820f",
+      "conversation": [
+        {
+          "invocation_id": "e-f0aa99d5-3a4d-477d-8ead-b5693520271e",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "hello"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Hello there! It's so nice to meet you. I'm a friendly conversational agent, and my main goal is to get to know you a little better. I'm really curious about people, and I love learning about different lives, interests, and perspectives.\n\nTo start, how are you doing today? And where in the world are you connecting from? No need to be too specific if you prefer, just a general idea would be lovely!"
+              }
+            ],
+            "role": null
+          },
+          "intermediate_data": {
+            "tool_uses": [],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1759158001.546553
+        },
+        {
+          "invocation_id": "e-fcbf74c2-f8b2-45c9-a09f-3752b50ed117",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "I am doing great, thanks for asking"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "That's wonderful to hear! I'm glad you're having a great day.\n\nAnd no worries if you'd rather not share your exact location, but I was just curious about the general part of the world you call home. Sometimes knowing a bit about where someone is helps me understand their perspective a little better! 😊\n\nAnd speaking of understanding, I'm also really interested in what languages you speak. Is English your first language, or do you have others that you use regularly?"
+              }
+            ],
+            "role": null
+          },
+          "intermediate_data": {
+            "tool_uses": [],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1759158019.595719
+        },
+        {
+          "invocation_id": "e-6dc76a27-abb6-410b-932c-c3effa5c8f02",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "No, Polish is my first language, english is my second"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Oh, that's so interesting! Polish is a beautiful language. I've heard it can be quite challenging to learn, with its grammar and unique sounds.\n\nDo you still use Polish regularly, perhaps with family or friends, or do you find yourself mostly speaking English these days? And how was the experience of learning English for you? Was it something you enjoyed, or more of a necessity?"
+              }
+            ],
+            "role": null
+          },
+          "intermediate_data": {
+            "tool_uses": [],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1759158040.847623
+        },
+        {
+          "invocation_id": "e-487aafff-3582-483c-943b-eaf3191ef6ec",
+          "user_content": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "since I live in poland I use it on daily basis"
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "video_metadata": null,
+                "thought": null,
+                "inline_data": null,
+                "file_data": null,
+                "thought_signature": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "function_call": null,
+                "function_response": null,
+                "text": "Ah, that makes perfect sense! So you're right there in Poland. That's fantastic. I've always been fascinated by Poland's rich history and culture.\n\nWhat do you enjoy most about living in Poland? Is there anything you'd recommend someone experience or see there?\n\nAnd on a different note, since you're using both Polish and English, do you find yourself thinking in both languages sometimes, or does one dominate more depending on what you're doing?"
+              }
+            ],
+            "role": null
+          },
+          "intermediate_data": {
+            "tool_uses": [],
+            "intermediate_responses": []
+          },
+          "creation_timestamp": 1759158058.622358
+        }
+      ],
+      "session_input": {
+        "app_name": "get_to_know_me",
+        "user_id": "user",
+        "state": {}
+      },
+      "creation_timestamp": 1759158127.380395
+    }
+  ],
+  "creation_timestamp": 1759158094.005013
+}
